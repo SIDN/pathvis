@@ -1,0 +1,15 @@
+__pycache__
+.idea
+.vagrant
+.venv
+vrps.json
+webui/node_modules/
+webui/yarn-error.log
+webui/build/
+.python-version
+*pyrightconfig.json
+meuk
+*.log
+*.key
+*.bak
+*.pem

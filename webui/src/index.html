@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Path monitoring demo</title>
+	
+	<script type="module" src="./js/index.js"></script>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/custom_bootstrap.css">
+
+<script>
+function showTab(btn, tabName) {
+    var i;
+    var x = document.getElementsByClassName("tab-button");
+    for (i = 0; i < x.length; i++) {
+        x[i].classList.remove("tab-active");
+    }
+    var x = document.getElementsByClassName("tab");
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";  
+        btn.classList.add("tab-active");  
+    }
+    document.getElementById(tabName).style.display = "block";  
+}
+</script>
+
+  </head>
+  <body>
+      	<div class="container-flex flex-column vh-100">
+                <div class="d-flex flex-row" id="banner"> 
+                    <img class="firstlogo" src="logo-2stic.svg" />
+                    <img class="logo" src="logo-sidn.svg" />
+                    <span id="logotext">Labs</span>
+                    <span class='btn-spacer'></span> 
+                    <h4><span class="badge bg-danger" id="statusmsg">Disconnected</span></h4>
+                </div>
+            <div class="container-fluid h-100">
+                    <div class="row align-items-start h-80">
+                            <div class="col-8 h-100">
+                                    <div class="d-flex flex-column h-100">
+                                            <!-- Left part of screen -->
+                                            <div class="">
+                                                    <div id="network_wrap"><div id="network-currentstate"></div></div>
+                                            </div>
+                                    </div>
+                            </div>
+                            <div class="col-4 h-50">
+                                <div class="d-flex flex-column tab-pane">
+
+                                    <div class="tab-bar">
+                                        <button id="show-control-tab-button" class="tab-bar-item tab-button" onclick="showTab(event.target, 'controls')">Controls</button>
+                                        <button class="tab-bar-item tab-button" onclick="showTab(event.target, 'routing-controls')">Routing controls</button>
+                                        <button class="tab-bar-item tab-button" onclick="showTab(event.target, 'history')">Path changes</button>
+                                        <button class="tab-bar-item tab-button" onclick="showTab(event.target, 'network-messages')">Network messages</button>
+                                    </div>
+
+                                    <br />
+
+                                    <div id="controls" class="tab">
+                                        <input type="button" class="btn btn-sm btn-outline-primary" value="Notify changes" id="set-notification-destinations" disabled="true"/>
+                                        <input type="button" class="btn btn-sm btn-outline-primary" value="Don't notify me" id="clear-notification-destinations" disabled="true"/>
+                                        <br />
+                                        <br />
+
+                                        <div class="switch_box box_1">
+                                        <input id="asn-mode-switch" type="checkbox" class="switch_1" class="check value="Group by ASN"/>
+                                        Group by ASN
+                                        </div>
+                                        <input type="button" class="btn btn-sm btn-outline-primary" value="Show selected node's destination(s) only" id="show-current-destinations-only" disabled="true"/>
+                                        <input type="button" class="btn btn-sm btn-outline-primary" value="Show all destinations" id="show-all-destinations" disabled="true"/>
+                                        <br />
+                                        <br />
+                                         <div class="form-group">
+                                          <label for="sel1">Filter Destination by service:</label>
+                                          <select class="form-control" id="filter-destination-by-port">
+                                            <option value="none" selected disabled>Select service</option>
+                                          </select>
+                                        </div>
+
+<!--
+                                        <br />
+                                        <br />
+                                        <input type="button" class="btn btn-sm btn-outline-primary" value="Redraw entire network" id="redraw-network" />
+-->
+                                    </div>
+
+                                    <div id="routing-controls" class="routing-controls tab">
+                                        <!-- Right part of screen -->
+                                        <p>
+                                        Here, we can change how the traffic is routed to the internet. A user can make a small route change (router1, router2) or a large one (uplink1, uplink2). Changing this should result in a change in the path trace on the left.
+                                        </p>
+                                        via:
+                                        <div class="btn-group" role="group">
+                                                <input type="button" class="btn btn-sm btn-outline-primary" id="btn_router1" value="router1" onclick="routingClick(this);" />
+                                                <input type="button" class="btn btn-sm btn-outline-primary" id="btn_router2" value="router2" onclick="routingClick(this);" />
+                                        </div>
+                                        <br />
+                                        <br />
+                                        via:
+                                        <div class="btn-group" role="group">
+                                                <input type="button" class="btn btn-sm btn-outline-primary" id="btn_uplink1" value="uplink1" onclick="routingClick(this);" />
+                                                <input type="button" class="btn btn-sm btn-outline-primary" id="btn_uplink2" value="uplink2" onclick="routingClick(this);" />
+                                        </div>
+
+                                    </div>
+
+                                    <div id="history" class="tab overflow-auto">
+                                        <ul class="list-group" id="history-list">
+                                          <!-- Below item is a template -->
+                                          <a href="#" onclick="historyClick(this);return false;" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start d-inline d-none" id="history-item-template" data-idx="-1">
+                                                  <span class="badge history-action text-primary">New span</span><samp class="history-hostname">sidnlabs.nl</samp>
+                                                  <span class="badge history-time bg-warning" data-time="x">just now</span>
+                                          </a>
+                                        </ul>
+                                    </div>
+
+                                    <div id="network-messages" class="align-self-stretch overflow-auto h-100 tab">
+                                        <div class="flex overflow-auto" id="messages">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="node-info-pane  overflow-auto">
+                                    <h2 id="nodeinfo-title">Node info</h2>
+
+                                    <ul class="list-group" id="nodeinfo-list">
+                                        <li id="nodeinfo-item-template" class="list-group-item d-flex justify-content-between align-items-start d-inline d-none" data-idx="-1">
+                                            <span class="nodeinfo-key ">bla</span> <span class="nodeinfo-value">meh</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                    </div>
+            </div>
+        </div>
+	
+	<!-- Modal window to show history of a path -->
+	<div class="modal" id="history-explorer">
+	  <div class="modal-dialog modal-dialog-centered modal-lg">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title">Changes for <span id="history-explorer-title">sidnlabs.nl</span></h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        <div id="network-history-state"></div>
+	      </div>
+	      <div class="modal-footer">
+			  <p>The above graph shows the changes in a path. The new sections are marked in green, the replaced sections in red.</p>
+	        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+  </body>
+</html>
+
