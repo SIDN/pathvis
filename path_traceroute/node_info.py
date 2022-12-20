@@ -138,7 +138,7 @@ def get_info(ip_address: str) -> dict[str, Optional[str]]:
         except ValueError:
             return ip
 
-    def as_info(ip: Optional[str], empty: bool = False, try_whois: bool = False) -> dict[str, str]:
+    def as_info(ip: Optional[str], empty: bool = False, timeout: int = 5) -> dict[str, str]:
         """Retrieves AS (and some additional info) via whois for an IP"""
 
         def default_value() -> str:
@@ -152,45 +152,31 @@ def get_info(ip_address: str) -> dict[str, Optional[str]]:
         if ip is None:
             return empty_dict
 
-        obj = None
+        ipasn, net = None, None
 
         try:
-            obj = ipwhois.IPWhois(ip)
-            # return obj.lookup_whois()
-        except ValueError:
+            net = ipwhois.Net(address=ip, timeout=timeout)
+            ipasn = ipwhois.asn.IPASN(net)
+        except (ValueError, ipwhois.exceptions.IPDefinedError):
             pass
 
-        if not obj:
+        if not ipasn:
             return empty_dict
 
-        # first try to obtain info via RDAP
+
         try:
-            return obj.lookup_rdap(depth=1)
+            return ipasn.lookup(asn_methods=['dns'])
         except (ipwhois.exceptions.IPDefinedError,
                 ipwhois.exceptions.WhoisLookupError,
                 ipwhois.exceptions.ASNParseError,
+                ipwhois.exceptions.ASNRegistryError,
                 ipwhois.exceptions.HTTPLookupError,
                 ):
             pass
         except ipwhois.exceptions.HTTPRateLimitError as rate_limit:
             logger.error('got rate limited %s', rate_limit)
-        except whois.parser.PywhoisError:
-            pass
         except ConnectionResetError as conn_error:
             logger.exception(conn_error)
-
-        if try_whois:
-            # try to obtain info via whois
-            try:
-                return obj.lookup_whois(retry_count=0, asn_methods=['whois'])
-            except (ipwhois.exceptions.IPDefinedError,
-                    ipwhois.exceptions.WhoisLookupError,
-                    ipwhois.exceptions.ASNParseError,
-                    ipwhois.exceptions.HTTPLookupError
-                    ):
-                pass
-            except whois.parser.PywhoisError:
-                pass
 
         logger.debug('ipwhois lookup for %s failed', ip)
         return empty_dict
