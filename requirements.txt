@@ -1,6 +1,6 @@
 websockets>=10.4,<11
-dnspython>=2.0,<3
-ipwhois>=1.2,<2
+dnspython==2.0.0
+ipwhois==1.2.0
 python-whois>=0.8,<2
 requests>=2.28,<3
 psutil>=5.9,<6
