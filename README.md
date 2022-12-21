@@ -20,6 +20,8 @@ The instructions assume a Debian-based system
 ```
 $ sudo apt-get install build-essential python3-all-dev python3-venv traceroute
 $ sudo apt-get install nodejs npm yarnpkg		# for the web UI
+$ git clone https://github.com/SIDN/pathvis
+$ cd pathvis
 $ python3 -m venv venv
 $ ./venv/bin/python3 -m pip install -r requirements.txt
 ```
