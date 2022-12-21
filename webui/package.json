@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "snowpack build",
-    "dev": "snowpack dev --config snowpack.config.js --verbose",
+    "dev": "snowpack dev --config snowpack.config.js",
     "prestart": "snowpack build",
     "start": "python3 -m http.server 8080 -d build --bind 127.0.0.1"
   },
