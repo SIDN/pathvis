@@ -11,6 +11,8 @@ PathVis enriches each hop encountered in the traceroutes with data from e.g. WHO
 When a route changes (e.g., in case of a brand new trace, or a new hop appears in the trace), PathVis publishes the enriched change to a WebSocket. 
 PathVis comes with both a graphical web interface which visualises the traceroutes in a graph (found in `webui/`), as well as a simple command line client (`ws_client.py`).
 
+In [this blog post](https://www.sidnlabs.nl/en/news-and-blogs/pathvis-visualising-traceroute-for-non-technical-users), we describe PathVis in more detail.
+
 ## Preparing PathVis
 
 Before you can run PathVis, you need to install some dependencies as described below.
