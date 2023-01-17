@@ -2,7 +2,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.4",
     "@snowpack/plugin-sass": "^1.4.0",
-    "bootstrap": "^5.1.3",
+    "bootstrap": "^5.2.3",
     "jquery": "^3.6.0",
     "luxon": "^2.3.1",
     "vis-data": "^7.1.3",
@@ -10,13 +10,14 @@
     "yarn": "^1.22.18"
   },
   "scripts": {
-    "build": "snowpack build",
-    "dev": "snowpack dev --config snowpack.config.js",
-    "prestart": "snowpack build",
+    "build": "vite build src --outDir ${PWD}/build",
+    "dev": "vite src",
+    "prestart": "vite build src --outDir ${PWD}/build",
     "start": "python3 -m http.server 8080 -d build --bind 127.0.0.1"
   },
   "devDependencies": {
-    "snowpack": "^3.8.8",
+    "scss": "^0.2.4",
+    "vite": "^4.0.4",
     "yarn-run-all": "^3.1.1"
   },
   "engines": {
