@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "scss": "^0.2.4",
-    "vite": "^4.0.4",
+    "vite": "^4.5.2",
     "yarn-run-all": "^3.1.1"
   },
   "engines": {
